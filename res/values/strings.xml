@@ -5,5 +5,25 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_mapa">Mapa</string>
-
+	
+    <string-array name="nav_options">
+        <item >Buscar Serv. Banc</item>
+        <item >Buscar Serv. Banc por</item>
+        <item >Anuncios</item>
+        <item >Configuracion</item>
+        <item >Nuevo punto Banc</item>
+        <item >¡¡Dona yaaa!!</item>
+        <item >Salir</item>
+    </string-array>
+    
+    <array name="navigation_icons">
+        <item>@drawable/ic_launcher</item>
+        <item>@drawable/ic_launcher</item>
+        <item>@drawable/ic_launcher</item>
+        <item>@drawable/ic_launcher</item>
+        <item>@drawable/ic_launcher</item>
+        <item>@drawable/ic_launcher</item>
+        <item>@drawable/ic_launcher</item>
+    </array>
+    
 </resources>
