@@ -25,5 +25,9 @@
         <item>@drawable/ic_launcher</item>
         <item>@drawable/ic_launcher</item>
     </array>
-    
+
+    <string name="title_activity_engine">Engine</string>
+    <string name="title_activity_app_engine">AppEngine</string>
+    <string name="title_activity_mapa2">Mapa2</string>
+
 </resources>
