@@ -4,20 +4,23 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
     
-    <ImageView 
-        android:id="@+id/icon"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
-        android:scaleType="centerCrop" />
+   
     <TextView 
         android:id="@+id/tittle_item"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="#424242"
-        android:layout_toRightOf="@id/icon"
         android:gravity="center_vertical"
+        android:layout_marginLeft="5dp"
+        android:paddingLeft="5dp"
         android:paddingRight="5dp"
         android:paddingTop="5dp"
         android:paddingBottom="5dp"
         android:textSize="15dp" />
+     <ImageView 
+        android:id="@+id/icon"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_toRightOf="@id/tittle_item"
+        android:scaleType="centerCrop" />
 </RelativeLayout>

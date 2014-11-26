@@ -36,8 +36,8 @@ public class MainActivity extends Activity {
         NavDrawerLayout=(DrawerLayout) findViewById(R.id.drawer_layout);
         NavList=(ListView)findViewById(R.id.left_drawer);
         
-        View header=getLayoutInflater().inflate(R.layout.header, null);
-        NavList.addHeaderView(header);
+        //View header=getLayoutInflater().inflate(R.layout.header, null);
+        //NavList.addHeaderView(header);
         NavIcons=getResources().obtainTypedArray(R.array.navigation_icons);
         titulos=getResources().getStringArray(R.array.nav_options);
         NavItems=new ArrayList<menu>();
@@ -48,6 +48,8 @@ public class MainActivity extends Activity {
         NavItems.add(new menu(titulos[4], NavIcons.getResourceId(4,-1)));
         NavItems.add(new menu(titulos[5], NavIcons.getResourceId(5,-1)));
         NavItems.add(new menu(titulos[6], NavIcons.getResourceId(6,-1)));
+
+        
         NavAdapter=new adaptador_menu(this,NavItems);
         NavList.setAdapter(NavAdapter);
         

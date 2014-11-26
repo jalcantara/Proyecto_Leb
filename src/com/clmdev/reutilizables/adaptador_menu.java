@@ -58,10 +58,12 @@ public class adaptador_menu extends BaseAdapter {
 			view=new File();
 			menu itm=arrayitems.get(position);
 			convertView =inflator.inflate(R.layout.itm, null);
+
 			view.titulo_itm=(TextView)convertView.findViewById(R.id.tittle_item);
 			view.titulo_itm.setText(itm.getTitulo());
 			view.icono=(ImageView)convertView.findViewById(R.id.icon);
 			view.icono.setImageResource(itm.getImg());
+			
 			convertView.setTag(view);
 		}else {
 			view=(File)convertView.getTag();
