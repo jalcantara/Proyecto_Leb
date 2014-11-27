@@ -2,6 +2,7 @@ package com.clmdev.localizadoreb;
 
 import java.io.Console;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -10,6 +11,7 @@ import org.json.JSONObject;
 
 import android.app.Activity;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
@@ -18,6 +20,12 @@ import android.os.Bundle;
 import android.renderscript.Double4;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.clmdev.entidades.Servicio;
@@ -38,11 +46,23 @@ public class Mapa extends Activity {
 
 	// Google Map
 	private GoogleMap googleMap;
+	
+	private Spinner spinner1;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_mapa);
+		
+		spinner1 = (Spinner) findViewById(R.id.spinner);
+		List<String> list = new ArrayList<String>();
+		list.add("Item 1");
+		list.add("Item 2");
+		list.add("Item 3");
+		list.add("Item 4");
+		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, list);
+		dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		spinner1.setAdapter(dataAdapter);
 
 		try {
 			// Loading map
@@ -109,7 +129,7 @@ public class Mapa extends Activity {
 			});
 			
 			googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom( new LatLng(-9.3623528, -75.9594727), 5));
-
+			
 			// llenarMapa();
 			/*
 			 * googleMap.setOnMapClickListener(new OnMapClickListener() {
@@ -236,7 +256,39 @@ public class Mapa extends Activity {
 			googleMap.addMarker(markerOptions);
 		}
 	}
+	
+	/*public <ViewGroup> void llenarSpinner() {
+		Spinner spiCritetioEvaluacion01 = (Spinner) findViewById(R.id.spinner1);
+		String[] list = {"Musica","Musica"};
+		ArrayAdapter<String> adaptadorSpinner = new ArrayAdapter<String>(this,
+				R.layout.custom_row_spinner, list) {
+			public View getView(int position, View convertView,
+					android.view.ViewGroup parent) {
+				
+				TextView v = (TextView) super.getView(position, convertView,
+						parent);
+				v.setTextColor(Color.rgb(255, 109, 104));
+				v.setTextSize(18);
+				return v;
+			}
 
+			public View getDropDownView(int position, View convertView,
+					android.view.ViewGroup parent) {
+				TextView v = (TextView) super.getView(position, convertView,
+						parent);
+				v.setTextColor(Color.rgb(255, 255, 255));
+				v.setPadding(10, 5, 0, 10);
+				v.setBackgroundColor(Color.rgb(77, 99, 113));
+				v.setTextSize(18);
+				return v;
+			}
+		};
+
+		adaptadorSpinner
+				.setDropDownViewResource(android.R.layout.simple_list_item_checked);
+		spiCritetioEvaluacion01.setAdapter(adaptadorSpinner);
+	}
+*/
 	private void llenarMapa() {
 		// lets place some 10 random markers
 		double[] location = { -8.0743, -79.006653 };
@@ -326,5 +378,6 @@ public class Mapa extends Activity {
 			}
 		}
 	}
+
 
 }
