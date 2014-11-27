@@ -2,6 +2,8 @@ package com.clmdev.localizadoreb;
 
 import java.io.Console;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -20,6 +22,7 @@ import android.widget.Toast;
 
 import com.clmdev.entidades.Servicio;
 import com.clmdev.reutilizables.Util;
+import com.google.android.gms.internal.es;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
@@ -35,7 +38,6 @@ public class Mapa extends Activity {
 
 	// Google Map
 	private GoogleMap googleMap;
-	ArrayList<Servicio> lstServicios;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -76,8 +78,8 @@ public class Mapa extends Activity {
 				public void onCameraChange(CameraPosition cameraPosition) {
 					// Make a web call for the locations
 					LatLng latLng = googleMap.getCameraPosition().target;
-					/*//Log.e("getCameraPosition().target", latLng.toString());
-					Log.e("hashCode",cameraPosition.hashCode()+"");
+					Log.e("LATLON", getDistance(cameraPosition.zoom)+" zoom -> "+cameraPosition.zoom);
+					/*//Log.e("hashCode",cameraPosition.hashCode()+"");
 					//Log.e("googleMap.getMyLocation().getLatitude()",googleMap.getMyLocation().getLatitude()+"");
 					Log.e("getMaxZoomLevel",googleMap.getMaxZoomLevel()+"");
 					Log.e("getProjection",googleMap.getProjection()+"");*/
@@ -89,14 +91,24 @@ public class Mapa extends Activity {
 					 * googleMap.animateCamera(
 					 * CameraUpdateFactory.newCameraPosition(cameraPosition));
 					 */
-					String url = "http://192.168.0.46/proyectoleb_ws/localizador/result/lat/"
-							+ latLng.latitude
-							+ "/lon/"
-							+ latLng.longitude
-							+ "/format/json";
-					new ReadCualidadesJSONFeedTask().execute(url);
+					
+					int entidad = 1;
+					if(cameraPosition.zoom>=11){
+						String url = "http://192.168.0.14/proyectoleb_ws/localizador/result/lat/"
+								+ latLng.latitude
+								+ "/lon/"
+								+ latLng.longitude
+								+ "/dis/"+getDistance(cameraPosition.zoom)+"/ent/"+entidad+"/format/json";
+						Log.e("URL",url);
+						new ReadCualidadesJSONFeedTask().execute(url);
+					}
+					
+					
+					
 				}
 			});
+			
+			googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom( new LatLng(-9.3623528, -75.9594727), 5));
 
 			// llenarMapa();
 			/*
@@ -140,60 +152,89 @@ public class Mapa extends Activity {
 		}
 
 	}
-
-	void getCurrentLocation() {
-		Location myLocation = googleMap.getMyLocation();
-		if (myLocation != null) {
-			double dLatitude = myLocation.getLatitude();
-			double dLongitude = myLocation.getLongitude();
-			Log.i("APPLICATION", " : " + dLatitude);
-			Log.i("APPLICATION", " : " + dLongitude);
-			googleMap.addMarker(new MarkerOptions()
-					.position(new LatLng(dLatitude, dLongitude))
-					.title("My Location")
-					.icon(BitmapDescriptorFactory
-							.fromResource(R.drawable.ic_launcher)));
-			googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(
-					dLatitude, dLongitude), 8));
-
-		} else {
-			Toast.makeText(this, "Unable to fetch the current location",
-					Toast.LENGTH_SHORT).show();
+	
+	public double getDistance(double zoom){
+		int promedio = (int) Math.round(zoom);
+		double res=2;
+		switch (promedio){
+			case 18:
+				res=0.3;
+				break;
+			case 17:
+				res=0.5;
+				break;
+			case 16:
+				res=1;
+				break;
+			case 15:
+				res=2;
+				break;
+			case 14:
+				res=4;
+				break;
+			case 13:
+				res=6;
+				break;
+			case 12:
+				res=7;
+				break;
+			case 11:
+				res=8;
+				break;
+			default:
+				res=2;
+				break;
 		}
-
+		return res;
+		
 	}
-
-	private void llevarLocalizacion() {
-		LocationManager service = (LocationManager) getSystemService(LOCATION_SERVICE);
-		Criteria criteria = new Criteria();
-		String provider = service.getBestProvider(criteria, false);
-
-		Location location = service.getLastKnownLocation(provider);
-		LatLng userLocation = new LatLng(location.getLatitude(),
-				location.getLongitude());
-		CameraPosition cameraPosition = new CameraPosition.Builder()
-				.target(userLocation).zoom(15).build();
-		googleMap.animateCamera(CameraUpdateFactory
-				.newCameraPosition(cameraPosition));
-	}
-
-	private void llenarMapaOnClick() {
+	
+	/*private int second=0;
+	boolean ejecuto = false;
+	private void hilo() {
+		second=0;
+		ejecuto=false;
+		long UPDATE_INTERVAL = 1;
+		Timer timer = new Timer();
+		timer.scheduleAtFixedRate(new TimerTask() {
+			@Override
+			public void run() {
+				
+				if(second>1000){					
+					second=0;
+					ejecuto=true;	
+					super.cancel();
+					Log.e("Segundo", "Procede a Ejecutarse");
+				}				
+				second++;				
+				Log.e("Segundo", second+"");
+			}
+		}, 0, UPDATE_INTERVAL);
+	}*/
+	
+	public void mostrarMapa(ArrayList<Servicio> lstServicio){
 		googleMap.clear();
-		for (int i = 0; i < lstServicios.size(); i++) {
-			LatLng latLng = new LatLng(lstServicios.get(i).getLatitud(),
-					lstServicios.get(i).getLongitud());
+		for (Servicio servicio : lstServicio) {
+			Log.e("Aqui",servicio.getDireccion());
+			LatLng latLng = new LatLng(servicio.getLatitud(),servicio.getLongitud());
 			MarkerOptions markerOptions = new MarkerOptions();
-			markerOptions
-					.position(new LatLng(latLng.latitude, latLng.longitude));
-			markerOptions.title(lstServicios.get(i).getLatitud() + " : "
-					+ lstServicios.get(i).getLongitud());
-			// googleMap.clear();
-			// googleMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+			markerOptions.position(latLng);
+			markerOptions.title(servicio.getLocal());
+			markerOptions.snippet(servicio.getDireccion());		
+			if(servicio.getTipo()==1){
+				markerOptions.icon(BitmapDescriptorFactory
+						.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+			}
+			if(servicio.getTipo()==2){
+				markerOptions.icon(BitmapDescriptorFactory
+						.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+			}
+			if(servicio.getTipo()==3){
+				markerOptions.icon(BitmapDescriptorFactory
+						.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+			}
 			googleMap.addMarker(markerOptions);
-			Log.e("desde", lstServicios.get(i).getLatitud() + " : "
-					+ lstServicios.get(i).getLongitud());
 		}
-
 	}
 
 	private void llenarMapa() {
@@ -221,7 +262,7 @@ public class Mapa extends Activity {
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
-			Util.MostrarDialog(Mapa.this);
+			//Util.MostrarDialog(Mapa.this);
 		}
 
 		protected String doInBackground(String... urls) {
@@ -230,41 +271,36 @@ public class Mapa extends Activity {
 
 		protected void onPostExecute(String result) {
 			try {
+				
 				JSONArray jsonArray = new JSONArray(result);
 				JSONObject datos = new JSONObject();
-				lstServicios = new ArrayList<Servicio>();
-				LatLng latLng = null;
-				googleMap.clear();
+				ArrayList<Servicio> lstServicio = new ArrayList<Servicio>();				
 				for (int i = 0; i < jsonArray.length(); i++) {
-					Log.e("desde", jsonArray.get(i).toString());
 					datos = jsonArray.getJSONObject(i);
-					latLng = new LatLng(datos.getDouble("lat"),
-							datos.getDouble("lon"));
-					MarkerOptions markerOptions = new MarkerOptions();
-					markerOptions.position(latLng);
-					markerOptions.title(datos.getDouble("lat") + " : "
-							+ datos.getDouble("lon"));
-					// googleMap.clear();
-
-					googleMap.addMarker(markerOptions);
-					/*
-					 * Servicio c = new Servicio(); datos =
-					 * jsonArray.getJSONObject(i); c.setId(datos.getInt("id"));
-					 * c.setLatitud(datos.getDouble("lat"));
-					 * c.setLongitud(datos.getDouble("lon"));
-					 * listaCualidades.add(c);
-					 */
-
+					Servicio servicio = new Servicio();
+					servicio.setLocal(datos.getString("local"));
+					servicio.setDireccion(datos.getString("direccion"));
+					servicio.setLatitud(datos.getDouble("lat"));
+					servicio.setTipo(datos.getInt("tipo"));
+					servicio.setLongitud(datos.getDouble("lon"));
+					lstServicio.add(servicio);
 				}
+				mostrarMapa(lstServicio);
+				Log.e("res", lstServicio.get(0).getDireccion());
+				super.cancel(true);
+				//Util.cerrarDialogLoad();
 
 			} catch (Exception e) {
 				Toast.makeText(
 						getApplicationContext(),
-						"No se pudieron obtener datos del servidor: Lista de Cualidades",
+						"No se pudieron obtener datos del servidor",
 						Toast.LENGTH_LONG).show();
+				this.cancel(true);
+				//Util.cerrarDialogLoad();
 
 			}
-			Util.cerrarDialogLoad();
+			
+			
 		}
 	}
 

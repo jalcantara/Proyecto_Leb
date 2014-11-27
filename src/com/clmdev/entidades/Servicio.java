@@ -6,7 +6,7 @@ public class Servicio {
 	private String direccion;
 	private String horario;
 	private String entidadFinanciera;
-	private String tipo;
+	private int tipo;
 	private Double latitud;
 	private Double longitud;
 	public int getId() {
@@ -39,10 +39,11 @@ public class Servicio {
 	public void setEntidadFinanciera(String entidadFinanciera) {
 		this.entidadFinanciera = entidadFinanciera;
 	}
-	public String getTipo() {
+	
+	public int getTipo() {
 		return tipo;
 	}
-	public void setTipo(String tipo) {
+	public void setTipo(int tipo) {
 		this.tipo = tipo;
 	}
 	public Double getLatitud() {
